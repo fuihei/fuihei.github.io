@@ -172,6 +172,6 @@ var callLoadStage = function() {
 }
 var callGameStage = function() {
 	Game.delLayer(Loader, 0);
-	menuboard = new menuBoard();
-	mainPanel.setPanel(menuboard, 1, 1, true);
+	//menuboard = new menuBoard();
+	//mainPanel.setPanel(menuboard, 1, 1, true);
 }
