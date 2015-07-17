@@ -332,7 +332,7 @@ var authorBoard = function() {
 		ctx.restore();
 	}
 	this.addAni = function() {
-		Tween.create.call(this, "translate", 1, true, function() {}, "linear", 0, height, 0, 0, 15*(Game.width/320));
+		Tween.create.call(this, "translate", 1, true, function() {}, "linear", 0, height, 0, 0, (height/20)*(Game.width/320));
 	}
 }
 var publishBoard = function() {
