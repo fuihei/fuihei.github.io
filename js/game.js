@@ -45,11 +45,9 @@ var Game = new function() {
 		this.width = ORIGINAL_WIDTH;
 		this.height = fullFill ? Math.floor(ORIGINAL_WIDTH * this.innerHeight / this.innerWidth) : ORIGINAL_HEIGHT;
 		this.scale = 1;
-
 		this.fullRate = fullFill ? this.innerWidth / this.width : 1;
-
 		this.canvas = document.createElement("canvas");
-		document.body.appendChild(this.canvas);
+		document.body.insertBefore(this.canvas,document.getElementById("myframe"));
 		this.canvas.width = this.width * this.fullRate;
 		this.canvas.height = this.height * this.fullRate;
 		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
@@ -105,8 +103,8 @@ var Game = new function() {
 						Game.touch.pageY = Math.round(singleTouch.pageY) - Game.canvas.getBoundingClientRect().top;
 
 						Game.touch.touched = true;
-						Game.touch.X = Game.touch.pageX;
-						Game.touch.Y = Game.touch.pageY;
+						Game.touch.X = Game.touch.pageX/ Game.fullRate;
+						Game.touch.Y = Game.touch.pageY/ Game.fullRate;
 						Game.touch.pageX = null;
 						Game.touch.pageY = null;
 					}
@@ -167,10 +165,10 @@ var callLoadStage = function() {
 	backscene = new BackScene();
 	Game.addLayer(backscene, 0);
 
-	Loader.load(callGameStage);
+	Loader.load(callMenuBoard);
 	Game.addLayer(Loader, 0);
 }
-var callGameStage = function() {
+var callMenuBoard = function() {
 	Game.delLayer(Loader, 0);
 	menuboard = new menuBoard();
 	mainPanel.setPanel(menuboard, 1, 1, true);

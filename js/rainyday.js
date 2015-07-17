@@ -1,5 +1,5 @@
 /**
- * this page is from maroslaw's rainyday.js on github 
+ * this page is from maroslaw's rainyday.js on github
  * Defines a new instance of the rainyday.js.
  * @param options options element with script parameters
  * @param canvas to be used (if not defined a new one will be created)
@@ -53,8 +53,8 @@ function RainyDay(options, canvas) {
 	this.blurRadius = this.options.blur;
 	this.prepareBackground(this.options.width, this.options.height);
 	this.prepareGlass();
-	this.GLASS_COLORS=["rgba(0,122,255,0.2)","rgba(76,217,100,0.2)","rgba(255,45,85,0.2)","rgba(142,142,147,0.2)"];
-	this.glassColor=this.GLASS_COLORS[rndf(4)];
+	this.GLASS_COLORS = ["rgba(0,122,255,0.2)", "rgba(76,217,100,0.2)", "rgba(255,45,85,0.2)", "rgba(142,142,147,0.2)"];
+	this.glassColor = this.GLASS_COLORS[rndf(4)];
 
 	// assume defaults
 	this.reflection = this.REFLECTION_MINIATURE;
@@ -62,9 +62,25 @@ function RainyDay(options, canvas) {
 	this.gravity = this.GRAVITY_NON_LINEAR;
 	this.collision = this.COLLISION_SIMPLE;
 
+	this.passTime = 0;
+	this.shakeCounts = 0.3;
+
 }
 
 RainyDay.prototype.step = function(dt) {
+		this.passTime += dt;
+		if (this.passTime > this.shakeCounts * 10000) {
+			this.shakeCounts++;
+			var loop = rndc(3);
+			Tween.create.call(this, "shake", loop, false, function() {}, 0.5 * Game.width, 1.2 * Game.height, 0.5 * Game.width, 1.2 * Game.height, -0.15, 0.25);
+			rainEngine.initialForce(loop * 10);
+		}
+
+		if (rainEngine.drops.length < 35 - loopIntervalAvg / 1.5) {
+			rainEngine.addDrop([
+				[rndc(3), rndc(2), rndc(5)]
+			]);
+		}
 
 	}
 	/**
@@ -85,15 +101,18 @@ RainyDay.prototype.draw = function(dt, ctx) {
 	this.drops = newDrops;
 
 	ctx.save();
-//	ctx.fillStyle = this.glassColor;
-//	ctx.globalCompositeOperation="lighter";
+	//	ctx.fillStyle = this.glassColor;
+	//	ctx.globalCompositeOperation="lighter";
 	//ctx.fillRect(0,0,Game.width,Game.height);
 
 	ctx.fillStyle = "white";
 	//ctx.fillText("NO:"+this.drops.length+";FPS:"+Math.floor(1000/loopIntervalAvg), 50, 30);
 	ctx.restore();
-	drawEmail(ctx,"17");
-	drawLogo(ctx,"25b");
+	ctx.save()
+	Tween.play.call(this);	
+	drawEmail(ctx, "17");
+	drawLogo(ctx, "25b");
+	ctx.restore()
 };
 
 
@@ -132,7 +151,7 @@ RainyDay.prototype.rain = function(presets) {
 				this.options.fps += fps;
 			}
 		}
-		console.log("raindropSpeed:"+this.options.fps);
+		console.log("raindropSpeed:" + this.options.fps);
 		this.PRIVATE_GRAVITY_FORCE_FACTOR_Y = (this.options.fps * 0.001) / 25;
 		this.PRIVATE_GRAVITY_FORCE_FACTOR_X = ((Math.PI / 2) - this.options.gravityAngle) * (this.options.fps * 0.001) / 50;
 	}
@@ -191,7 +210,7 @@ RainyDay.prototype.rain = function(presets) {
 		if (preset) {
 			this.putDrop(new Drop(this, Math.random() * this.width, Math.random() * this.height, preset[0], preset[1]));
 		}
-		console.log("raindropNum:"+this.drops.length);
+		console.log("raindropNum:" + this.drops.length);
 	}
 	this.addDrop(presets);
 	this.addDropCallback = function(dt, ctx) {

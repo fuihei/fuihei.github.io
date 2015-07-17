@@ -1,11 +1,22 @@
 //定义背景星空
 var BackScene = function() {
+	this.passTime = 0;
+	this.shakeCounts = 0.3;
+	this.lightsFullCounts = 1;
 	this.step = function(dt) {
-		if (typeof(rainEngine) != "undefined" && rainEngine.drops.length < 35 - loopIntervalAvg / 1.5) {
-			rainEngine.addDrop([
-				[rndc(3), rndc(2), rndc(5)]
-			]);
+		this.passTime += dt;
+		if (this.passTime > this.shakeCounts * 10000) {
+			this.shakeCounts++;
+			var loop = rndc(3);
+			Tween.create.call(this, "shake", loop, false, function() {}, 0.5 * Game.width, 1.2 * Game.height, 0.5 * Game.width, 1.2 * Game.height, -0.15, 0.25);
+
+			this.resetLights();
+			if (this.shakeCounts > this.lightsFullCounts * 25) {
+				this.drawLights();
+				this.lightsFullCounts++;
+			}
 		}
+
 	}
 	var GLASS_COLORS = [baseColor1.RGBtoRGBA(0.4), baseShineColor.RGBtoRGBA(0.4), outerSunColor.RGBtoRGBA(0.4), baseAlerterGreen.RGBtoRGBA(0.4)];
 	var glassColor = GLASS_COLORS[rndf(4)];
@@ -65,23 +76,38 @@ var BackScene = function() {
 			ctx.drawImage(lightCanvas, 0, 0);
 
 			ctx.restore();
-			drawEmail(ctx,"17");
-			drawLogo(ctx,"25b");
+			ctx.save()
+			Tween.play.call(this);
+			drawEmail(ctx, "17");
+			drawLogo(ctx, "25b");
+			ctx.restore();
 		}
 	}
 }
 var panelGroup = function() {
+	//同样定义三个层：0底层、1普通层、2顶层
 	this.panels = [
 		[],
 		[],
 		[]
 	];
+	//层内计数
 	var lastIndex = [-1, -1, -1];
+	//叠加子层
 	var over = 1;
 	var normal = 0;
 	var below = -1;
 	var length = this.panels.length - 1;
 	var self = this;
+	var GLASS_COLORS = [
+		[38, 174, 206],
+		[205, 105, 90],
+		[195, 165, 98],
+		[56, 157, 80]
+	];
+	var random = GLASS_COLORS[rndf(4)];
+	//var bgd = createGlass(Game.width, Game.height, random[0], random[1], random[2], 0.6, true);
+	var bgd2 = createGlass(Game.width, Game.height, random[0], random[1], random[2], 0.8, true);
 	this.setPanel = function(panel, subGroup, group, bool) {
 		if (bool) {
 			this.panels[group].push([panel, subGroup]);
@@ -95,7 +121,7 @@ var panelGroup = function() {
 					window.requestFrame(function() {
 						self.panels[group].splice(i, 1);
 						lastIndex[group] --;
-						//Tween.clear.call(panel);
+						Tween.clear.call(panel);
 					})
 					return;
 				}
@@ -110,6 +136,8 @@ var panelGroup = function() {
 					//只对非below的查找
 					if (this.panels[j][i][1] >= normal) {
 						var buttonFound = this.panels[j][i][0].checkInput();
+						//console.log(buttonFound)
+						//如果找到了，或者是over的，就跳出两层循环
 						if (this.panels[j][i][1] >= over || buttonFound) {
 							j = -1;
 							break;
@@ -140,7 +168,7 @@ var panelGroup = function() {
 				else if (this.panels[j][i][1] == over) {
 					ctx.save();
 					if (j == 2) {
-						//ctx.drawImage(bgd2, 0, 0);
+						ctx.drawImage(bgd2, 0, 0);
 						//console.log("2")
 					} else {
 						//ctx.drawImage(bgd, 0, 0);
@@ -170,7 +198,7 @@ var Button = function(x, y, w, h, type, value, font, fillStyle) {
 	if (font) {
 		this.ctx.font = font;
 	} else {
-		this.ctx.font = base_font["17b"];
+		this.ctx.font = base_font["17"];
 	}
 	if (fillStyle) {
 		this.fillStyle = fillStyle;
@@ -189,20 +217,20 @@ Button.prototype.initialButton = function() {
 		//按钮为灰白色，边缘略微发亮
 		this.ctx.shadowOffsetX = 1 * Game.scale;
 		this.ctx.shadowOffsetY = 1 * Game.scale;
-		this.ctx.shadowColor=baseButtonShadowBlueblur
+		this.ctx.shadowColor = baseButtonShadowBlueblur
 		gra.addColorStop(0, baseButtonColorMilkWhite);
 		gra.addColorStop(1, baseButtonLightMilkWhite);
 		this.ctx.fillStyle = gra;
 		//画普通形态，灰色阴影和暗蓝字体
-		this.ctx.roundRect(buttonEdge, buttonEdge, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 0.5 * buttonEdge).fill();
+		this.ctx.roundRect(buttonEdge, buttonEdge, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 30).fill();
 
 		//画targeted形态，蓝色荧光和字体
 		this.ctx.shadowColor = baseAlerterGreen;
-		this.ctx.roundRect(buttonEdge, buttonEdge + this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 0.5 * buttonEdge).fill();
+		this.ctx.roundRect(buttonEdge, buttonEdge + this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 30).fill();
 
 		//画locked形态，橘色荧光和字体
 		this.ctx.shadowColor = baseButtonShadowBlueblur;
-		this.ctx.roundRect(buttonEdge, buttonEdge + 2 * this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 0.5 * buttonEdge).fill();
+		this.ctx.roundRect(buttonEdge, buttonEdge + 2 * this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 30).fill();
 		this.ctx.restore();
 
 		this.ctx.save();
@@ -227,7 +255,7 @@ Button.prototype.initialButton = function() {
 		//this.ctx.fillStyle = "rgba(252,182,12,1)";
 		this.ctx.fillText(this.value, 0.5 * this.w, (0.6 + 2) * this.h);
 		this.ctx.restore();
-	} 
+	}
 }
 
 Button.prototype.drawButton = function(ctx) {
@@ -240,17 +268,26 @@ Button.prototype.drawButton = function(ctx) {
 	}
 }
 var menuBoard = function() {
-	var buttonLine = 60 ;
-	var menus = [new Button(0.5 * Game.width-buttonLine, 0.5 * Game.height, 2*buttonLine, buttonLine, "text", CN ? "阅读" : "READ"), new Button(0.5 * Game.width-buttonLine, 0.7 * Game.height, 2*buttonLine, buttonLine, "text", CN ? "获取" : "G E T")];
+	var buttonLine = 60;
+	var buttonWidth=150;
+	var menus = [new Button(0.5 * Game.width -0.5*buttonWidth, 0.45 * Game.height, buttonWidth, buttonLine, "text", CN ? "获取游戏" : "GET GAME"), new Button(0.5 * Game.width - 0.5*buttonWidth, 0.65 * Game.height, buttonWidth, buttonLine, "text", CN ? "阅读故事" : "READ STORY")];
 	this.checkInput = function(dt) {
 		for (var i = 0, len = menus.length; i < len; i++) {
 			if (Game.touch.X >= menus[i].x && Game.touch.X <= menus[i].x + menus[i].w && Game.touch.Y >= menus[i].y && Game.touch.Y <= menus[i].y + menus[i].h) {
 				if (i == 0) {
-					//查看分数
+					if (typeof(publishboard) == "undefined") {
+						publishboard = new publishBoard();
+					}
+					mainPanel.setPanel(publishboard, 1, 2, true);
+					mainPanel.setPanel(menuboard, 1, 1, false);
 
 				} else if (i == 1) {
-					//查看更多
-				} 
+					if (typeof(authorboard) == "undefined") {
+						authorboard = new authorBoard();
+					}
+					mainPanel.setPanel(authorboard, 1, 2, true);
+					mainPanel.setPanel(menuboard, 1, 1, false);
+				}
 				return true;
 			}
 		}
@@ -259,13 +296,63 @@ var menuBoard = function() {
 	this.drawUI = function(ctx) {
 		ctx.save();
 		var len = menus.length;
-		//Tween.play.call(this);
+		Tween.play.call(this);
 		for (var i = 0; i < len; i++) {
 			menus[i].drawButton(ctx);
 		}
+		ctx.strokeStyle = baseColor2More;
+		ctx.beginPath();
+		ctx.lineWidth = 0.5;
+		ctx.globalAlpha = 0.3;
+		ctx.moveTo(0.3 * Game.width, 0.4 * Game.height+5);
+		ctx.lineTo(0.7 * Game.width, 0.4 * Game.height+5);
+		ctx.stroke();
 		ctx.restore();
 	}
 	this.addAni = function() {
-		//Tween.create.call(this, "alpha", 1, true, function() {}, 0.3, 1, 0.5);
+		Tween.create.call(this, "alpha", 1, true, function() {}, 0.1, 1, 1);
+	}
+}
+var authorBoard = function() {
+	var helps = CN ? "电梯下坠是什么感觉？请体验最真实刺激，又富于挑战和技巧的电梯事故模拟游戏。\n◆真实刺激◆\n周围频频摇晃，狭小的空间里你却无处躲藏。 重金属墙面剧烈的碰撞，突然脚下一轻，你整个人失去了重量。 慌乱中你摸索到一个电梯键，却因为制动力量过大，反而电梯绳断裂……在巨大惯性力量的冲击下，你以远超百米赛跑的速度砸在了地板上！\n一句著名的谚语“天亮了”，描述的就是这种绝处逢生的感觉。 当面临压力时，你是否也有这种感觉呢？\n◆极限挑战◆\n故事总有另一面——天亮了胜者为王！ 在你保命的同时，也可以挑战时间之王！速度之王！反应之王！回旋之王！事故之王！生存之王！ 从九阶籍籍无名，到高阶世界冠军，在“人梯共振”的感官刺激中走向高潮，赢取辉煌奖励！\n◆围观作者◆\nwww.9squaregame.com\nweibo.com/9squaregame \n微信订阅号：9square\n" : "Your know the desperate feeling of lift fall? This is the most REAL and EXCITING lift accident simulation game,full of CHALLENGES and TACTICS.\n◆REAL && MOST EXCITING◆\nShaking frequently all around,but you have nowhere to hide in this narrow space. Heavy metal strucks the iron wall hardly and unstoppablely,suddenly a loose under feet hits you,and you can't even feel gravity or breath! \nIn a immediate hurry,you find a button and request it to brake,unfortunatelly it's too close,and the huge force causes the lift rope to break! Huge inertia brings you to the ground with a speed of far more than 100 meter racing!\n◆EXTREMES && GREAT CHALLENGE◆\nOf course,there's another side of this Resonating Coin. While you try to survive from these accidents,you can also push your limits and challenge for the Crown of BEST TIME,BEST SPEED,BEST REACTION,BEAT TAI CHI,MOST ACCIDENTS,BEST SURVIVAL,which leads you from the Ninth Grade Nameless to the First Grade GODLIKE! \nAfter you master the skills and tactics of how to resonate with lift,you will feel great honor and happiness,which brings you to the heaven of climax,and awards you crowns!\n◆FEELINGS && ORDINARY'S LOVE◆\nDawn,or daybreak,symbolize this feeling of survive from desperation and abyss.\nWe make this game,to remember the ordinary people's feeling when facing great pressure.We love you and encourage you to survive!\nAnd especially to my Chinese friends.\n◆KNOW MORE && ABOUT AUTHOR◆\nwww.9squaregame.com\ntwitter: @springmid\n"
+	var height = Game.ctx.wrapText(helps, 0.1 * Game.width, 0, 0.8 * Game.width, 20 * Game.scale, "", true);
+	this.checkInput = function(dt) {
+		mainPanel.setPanel(authorboard, 1, 2, false);
+		mainPanel.setPanel(menuboard, 1, 1, true);
+		return true;
+	}
+	this.drawUI = function(ctx) {
+		ctx.save();
+		Tween.play.call(this);
+
+		ctx.font = base_font["12"];
+		ctx.textAlign = "left";
+		ctx.wrapText(helps, 0.1 * Game.width, - height+Game.height, 0.8 * Game.width, 20 * Game.scale, "", false);
+		closeTips.draw(ctx);
+		ctx.restore();
+	}
+	this.addAni = function() {
+		Tween.create.call(this, "translate", 1, true, function() {}, "linear", 0, height, 0, 0, 15*(Game.width/320));
+	}
+}
+var publishBoard = function() {
+	var publish = CN ? "游戏已经可以申请APPSTORE BETA测试，请发送邮件至springmid@icloud.com获取邀请" : "now we accept beta test request in APPSTORE,please send email to springmid@icloud.com to get invitation"
+	this.checkInput = function(dt) {
+		mainPanel.setPanel(publishboard, 1, 2, false);
+		mainPanel.setPanel(menuboard, 1, 1, true);
+		return true;
+	}
+	this.drawUI = function(ctx) {
+		ctx.save();
+		Tween.play.call(this);
+
+		ctx.font = base_font["12"];
+		ctx.textAlign = "center";
+		ctx.wrapText(publish, 0.5 * Game.width, 0.4 * Game.height, 0.8 * Game.width, 20 * Game.scale, "", false);
+		closeTips.draw(ctx);
+		ctx.restore();
+	}
+	this.addAni = function() {
+		Tween.create.call(this, "alpha", 1, true, function() {}, 0.3, 1, 0.5);
 	}
 }
