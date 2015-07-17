@@ -13,7 +13,7 @@ var Loader = new function() {
 		};
 		//逐个给图片传入id
 		this.imgs[0].id = (PC ? "p" : "m") + rndf(4)+ ".jpg";
-		this.imgs[1].id="title.png"
+		this.imgs[1].id="title_tiny.png"
 		//逐个给图片传入地址
 		for (i = 0; i < IMGS; i++) {
 			this.imgs[i].src = "img/" + this.imgs[i].id;
