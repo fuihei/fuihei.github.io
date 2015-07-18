@@ -272,7 +272,7 @@ Button.prototype.drawButton = function(ctx) {
 var menuBoard = function() {
 	var buttonLine = 65;
 	var buttonWidth= 65;
-	var menus = [new Button(0.5 * Game.width -0.5*buttonWidth, 0.5* Game.height, buttonWidth, buttonLine, "text", CN ? "Ο" : "Ο"), new Button(0.5 * Game.width - 0.5*buttonWidth, 0.7 * Game.height, buttonWidth, buttonLine, "text", CN ? "Δ" : "Δ")];
+	var menus = [new Button(0.5 * Game.width -0.5*buttonWidth, 0.45* Game.height, buttonWidth, buttonLine, "text", CN ? "Ο" : "Ο"), new Button(0.5 * Game.width - 0.5*buttonWidth, 0.65 * Game.height, buttonWidth, buttonLine, "text", CN ? "Δ" : "Δ")];
 	this.checkInput = function(dt) {
 		for (var i = 0, len = menus.length; i < len; i++) {
 			if (Game.touch.X >= menus[i].x && Game.touch.X <= menus[i].x + menus[i].w && Game.touch.Y >= menus[i].y && Game.touch.Y <= menus[i].y + menus[i].h) {
