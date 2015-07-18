@@ -1,4 +1,3 @@
-//PC不为真则是移动设备
 PC = (function() {
 	var userAgentInfo = navigator.userAgent;
 	//弹窗浏览器和设备信息
