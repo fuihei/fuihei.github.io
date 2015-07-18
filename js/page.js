@@ -18,7 +18,7 @@ var BackScene = function() {
 		}
 
 	}
-	var GLASS_COLORS = [baseColor1.RGBtoRGBA(0.4), baseShineColor.RGBtoRGBA(0.4), outerSunColor.RGBtoRGBA(0.4), baseAlerterGreen.RGBtoRGBA(0.4)];
+	var GLASS_COLORS = [baseColor1.RGBtoRGBA(0.5), baseShineColor.RGBtoRGBA(0.5), outerSunColor.RGBtoRGBA(0.5), baseAlerterGreen.RGBtoRGBA(0.5)];
 	var glassColor = GLASS_COLORS[rndf(4)];
 	this.drawLights = function() {
 		lightCanvas = document.createElement("canvas");
@@ -67,12 +67,13 @@ var BackScene = function() {
 		backCtx.drawImage(src, Math.max(0, (src.width - Game.width * scale) / 2), 0, Math.min(src.width, Game.width * scale), src.height, 0, 0, Game.width, Game.height);
 	}
 	this.draw = function(dt, ctx) {
+		ctx.clearRect(0,0,Game.width,Game.height)
 		if (PC) {
 			ctx.save();
 			if (typeof(backCanvas) != "undefined") {
 				ctx.drawImage(backCanvas, 0, 0);
 			}
-			ctx.globalAlpha = 0.85;
+			ctx.globalAlpha = 0.6;
 			ctx.drawImage(lightCanvas, 0, 0);
 
 			ctx.restore();
@@ -198,7 +199,7 @@ var Button = function(x, y, w, h, type, value, font, fillStyle) {
 	if (font) {
 		this.ctx.font = font;
 	} else {
-		this.ctx.font = base_font["17"];
+		this.ctx.font = base_font["25"];
 	}
 	if (fillStyle) {
 		this.fillStyle = fillStyle;
@@ -209,28 +210,29 @@ Button.prototype.initialButton = function() {
 	var TYPES = ["image", "text"];
 	this.ctx.clearRect(0, 0, this.w, 3 * this.h);
 	var buttonEdge = 10 * Game.scale;
+	var roundEdge=15* Game.scale;
 	if (this.type == TYPES[0]) {
 		this.ctx.drawImage(this.value, buttonEdge, buttonEdge);
 	} else if (this.type == TYPES[1]) {
 		this.ctx.save();
 		var gra = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 0, this.w / 2, this.h / 2, this.h / 2 - 10);
 		//按钮为灰白色，边缘略微发亮
-		this.ctx.shadowOffsetX = 1 * Game.scale;
-		this.ctx.shadowOffsetY = 1 * Game.scale;
-		this.ctx.shadowColor = baseButtonShadowBlueblur
+//		this.ctx.shadowOffsetX = 0.5 * Game.scale;
+//		this.ctx.shadowOffsetY = 0.5 * Game.scale;
+//		this.ctx.shadowColor = baseButtonShadowBlueblur
 		gra.addColorStop(0, baseButtonColorMilkWhite);
 		gra.addColorStop(1, baseButtonLightMilkWhite);
 		this.ctx.fillStyle = gra;
 		//画普通形态，灰色阴影和暗蓝字体
-		this.ctx.roundRect(buttonEdge, buttonEdge, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 30).fill();
+		this.ctx.roundRect(buttonEdge, buttonEdge, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, roundEdge).fill();
 
 		//画targeted形态，蓝色荧光和字体
 		this.ctx.shadowColor = baseAlerterGreen;
-		this.ctx.roundRect(buttonEdge, buttonEdge + this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 30).fill();
+		this.ctx.roundRect(buttonEdge, buttonEdge + this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, roundEdge).fill();
 
 		//画locked形态，橘色荧光和字体
 		this.ctx.shadowColor = baseButtonShadowBlueblur;
-		this.ctx.roundRect(buttonEdge, buttonEdge + 2 * this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, 30).fill();
+		this.ctx.roundRect(buttonEdge, buttonEdge + 2 * this.h, this.w - 2 * buttonEdge, this.h - 2 * buttonEdge, roundEdge).fill();
 		this.ctx.restore();
 
 		this.ctx.save();
@@ -268,9 +270,9 @@ Button.prototype.drawButton = function(ctx) {
 	}
 }
 var menuBoard = function() {
-	var buttonLine = 60;
-	var buttonWidth=150;
-	var menus = [new Button(0.5 * Game.width -0.5*buttonWidth, 0.45 * Game.height, buttonWidth, buttonLine, "text", CN ? "获取游戏" : "GET GAME"), new Button(0.5 * Game.width - 0.5*buttonWidth, 0.65 * Game.height, buttonWidth, buttonLine, "text", CN ? "阅读故事" : "READ STORY")];
+	var buttonLine = 65;
+	var buttonWidth= 65;
+	var menus = [new Button(0.5 * Game.width -0.5*buttonWidth, 0.7 * Game.height, buttonWidth, buttonLine, "text", CN ? "Ο" : "Ο"), new Button(0.5 * Game.width - 0.5*buttonWidth, 0.5 * Game.height, buttonWidth, buttonLine, "text", CN ? "Δ" : "Δ")];
 	this.checkInput = function(dt) {
 		for (var i = 0, len = menus.length; i < len; i++) {
 			if (Game.touch.X >= menus[i].x && Game.touch.X <= menus[i].x + menus[i].w && Game.touch.Y >= menus[i].y && Game.touch.Y <= menus[i].y + menus[i].h) {

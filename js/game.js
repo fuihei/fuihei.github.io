@@ -24,6 +24,7 @@ var Game = new function() {
 		14: 14 + "px bangers", //中
 		15: 15 + "px bangers",
 		17: 17 + "px bangers", //大
+		25: 25 + "px bangers",
 		"12b": "bold " + 12 + "px bangers",
 		"14b": "bold " + 14 * +"px bangers",
 		"15b": "bold " + 15 + "px bangers", //按键专用

@@ -13,8 +13,8 @@ function RainyDay(options, canvas) {
 
 	this.img = options.image;
 	this.defaults = {
-		opacity: 0.5, //雨滴效果的显现程度，0为在镜面后方几乎不显现，1为在镜面前方全部显现
-		blur: 10, //模糊程度
+		opacity: 1, //雨滴效果的显现程度，0为在镜面后方几乎不显现，1为在镜面前方全部显现
+		blur: 20, //模糊程度
 		blurOpacity: 1, //模糊效果的显现程度，0为不模糊，1为全部模糊
 		crop: [0, 0, Game.width, Game.height],
 		enableSizeChange: false,

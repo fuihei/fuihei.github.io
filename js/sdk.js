@@ -23,7 +23,7 @@ var drawEmail = function(ctx, size) {
 	ctx.shadowColor = baseAlerterGrey;
 	ctx.fillStyle = baseButtonLightMilkWhite;
 	ctx.textAlign = "center";
-	ctx.font = base_font[size];
+	ctx.font = base_font["10"];
 	ctx.fillText(CN ? "支持邮箱：springmid@icloud.com" : "EMAIL: springmid@icloud.com", 0.5 * Game.width, 0.9 * Game.height);
 	ctx.font = base_font["10"];
 	ctx.fillText(CN ? "weibo.com/9squaregame 微信订阅号：9square" : "twitter: @springmid_", 0.5 * Game.width, 0.95 * Game.height)
