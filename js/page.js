@@ -338,7 +338,7 @@ var authorBoard = function() {
 	}
 }
 var publishBoard = function() {
-	var publish = CN ? "电梯事故游戏，比较虐，讲究即时策略！\n游戏已经可以申请APPSTORE BETA测试，请发送邮件至springmid@icloud.com获取邀请" : "a lift accident real-time strategy game and maybe a little fucking hard!\nnow we accept beta test request in APPSTORE,please send email to springmid@icloud.com to get invitation"
+	var publish = CN ? "电梯事故游戏，比较虐，讲究即时策略！\n2015/7/24更新:已经上架APPSTORE\n2015/7/17:游戏已经可以申请APPSTORE BETA测试，请发送邮件至springmid@icloud.com获取邀请" : "a lift accident real-time strategy game and maybe a little fucking hard!\n2015/7/24 update:NOW AVAILABLE IN APPSTORE\n2015/7/17:now we accept beta test request in APPSTORE,please send email to springmid@icloud.com to get invitation"
 	this.checkInput = function(dt) {
 		mainPanel.setPanel(publishboard, 1, 2, false);
 		mainPanel.setPanel(menuboard, 1, 1, true);

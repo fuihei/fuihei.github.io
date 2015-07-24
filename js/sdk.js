@@ -271,7 +271,7 @@ CanvasRenderingContext2D.prototype.wrapText = function(text, x, y, maxWidth, lin
 		}
 		y += lineHeight;
 	}
-	console.log("end_y:" + y + ";start_y:" + originY)
+	//console.log("end_y:" + y + ";start_y:" + originY)
 	if (bool) return y - originY;
 }
 var createGlass = function(w, h, r, g, b, a, bool) {
