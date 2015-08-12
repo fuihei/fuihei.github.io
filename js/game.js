@@ -121,6 +121,7 @@ var Game = new function() {
 		//定义游戏渲染循环
 		this.loop = function(time) {
 				loopInterval = Math.round(time - loopLastTime);
+				loopInterval = loopInterval ? Math.min(loopInterval, 60) : 30
 				loopIntervalAvg = typeof(loopIntervalAvg) != "undefined" ? (loopIntervalAvg + loopInterval) / 2 : loopInterval;
 				for (var i = 0, len = Game.layers.length; i < len; i++) {
 					for (var j = 0, innerLen = Game.layers[i].length; j < innerLen; j++) {
